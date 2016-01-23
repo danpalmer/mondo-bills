@@ -1,5 +1,4 @@
 Django==1.9b1
-git+https://github.com/danpalmer/django-enumfield.git
 psycopg2
 django-extensions
 django-s3-storage
