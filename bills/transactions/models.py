@@ -14,7 +14,7 @@ class Transaction(models.Model):
         related_name='transactions',
     )
 
-    mondo_transaction_id = models.CharField(max_length=100)
+    mondo_transaction_id = models.CharField(max_length=100, unique=True)
 
     description = models.CharField(max_length=512)
 
