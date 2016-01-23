@@ -1,3 +1,4 @@
 *.pyc
 storage/
 staticfiles/
+secrets.env
