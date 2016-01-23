@@ -9,6 +9,11 @@ class MerchantGroup(models.Model):
 
 
 class Transaction(models.Model):
+    account = models.ForeignKey(
+        'accounts.Account',
+        related_name='transactions',
+    )
+
     amount = models.IntegerField()
     is_load = models.BooleanField(default=False)
     category = models.CharField(max_length=100)
