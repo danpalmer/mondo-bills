@@ -3,6 +3,8 @@ from django.db.transaction import on_commit
 from bills import mondo
 
 from .tasks import install_webhook
+from bills.transactions.tasks import download_all_transactions
+
 
 def refresh_accounts(user):
     accounts = mondo.get_accounts(user)
@@ -18,6 +20,8 @@ def refresh_accounts(user):
             balance = mondo.get_balance(user, account)
             account.current_balance = balance['balance']
             account.save()
+
+        download_all_transactions(account)
 
         if not account.webhook_id:
             on_commit(lambda: install_webhook(account))
