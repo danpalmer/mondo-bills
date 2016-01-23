@@ -1,8 +1,20 @@
 from django.db import models
 
 
+class MerchantGroup(models.Model):
+    name = models.CharField(max_length=100)
+    logo_url = models.URLField()
+    category = models.CharField(max_length=100)
+    mondo_group_id = models.CharField(max_length=100, unique=True)
+
+
 class Transaction(models.Model):
     amount = models.IntegerField()
-    decline_reason = models.CharField(max_length=100, null=True)
     is_load = models.BooleanField(default=False)
     category = models.CharField(max_length=100)
+    merchant_group = models.ForeignKey(
+        MerchantGroup,
+        related_name='transactions',
+    )
+
+    mondo_created = models.DateTimeField()
