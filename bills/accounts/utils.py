@@ -7,12 +7,17 @@ from .tasks import install_webhook
 def refresh_accounts(user):
     accounts = mondo.get_accounts(user)
     for account in accounts['accounts']:
-        account, _ = user.accounts.update_or_create(
+        account, created = user.accounts.update_or_create(
             mondo_account_id=account['id'],
             defaults={
                 'description': account['description'],
             },
         )
+
+        if created or account.current_balance == 0:
+            balance = mondo.get_balance(user, account)
+            account.current_balance = balance['balance']
+            account.save()
 
         if not account.webhook_id:
             on_commit(lambda: install_webhook(account))

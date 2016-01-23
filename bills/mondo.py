@@ -18,6 +18,7 @@ URL_ACCOUNTS = url('accounts')
 URL_TRANSACTIONS = url('transactions')
 URL_TRANSACTION_FMT = url('transaction/%s')
 URL_FEED = url('feed')
+URL_BALANCE = url('balance')
 
 
 def auth_redirect(state, redirect_uri):
@@ -51,6 +52,16 @@ def exchange_code_for_token(code, redirect_uri):
 
 def get_accounts(user):
     return requests.get(URL_ACCOUNTS, headers=auth_header(user)).json()
+
+
+def get_balance(user, account):
+    return requests.get(
+        URL_BALANCE,
+        params={
+            'account_id': account.mondo_account_id,
+        },
+        headers=auth_header(user),
+    ).json()
 
 
 def install_webhook(user, account_id, url):
