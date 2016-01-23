@@ -20,8 +20,7 @@ def refresh_accounts(user):
             balance = mondo.get_balance(user, account)
             account.current_balance = balance['balance']
             account.save()
-
-        download_all_transactions(account)
+            download_all_transactions(account)
 
         if not account.webhook_id:
             on_commit(lambda: install_webhook(account))
