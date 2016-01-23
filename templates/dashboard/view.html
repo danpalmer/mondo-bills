@@ -2,9 +2,11 @@
 
 {% block body_container %}
   <div class="row home-content">
-    <div class="col-xs-12">
-        <h3>Foobar</h3>
-    </div>
+    {% for account in request.user.accounts.all() %}
+        <div class="col-xs-12">
+            Account: {{ account }}
+        </div>
+    {% endfor %}
   </div>
 {% endblock %}
 
