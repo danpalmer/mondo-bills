@@ -14,6 +14,8 @@ class Transaction(models.Model):
         related_name='transactions',
     )
 
+    description = models.CharField(max_length=512)
+
     amount = models.IntegerField()
     is_load = models.BooleanField(default=False)
     category = models.CharField(max_length=100)
