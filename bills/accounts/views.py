@@ -1,6 +1,5 @@
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
-from django.views.generic import ListView
 from django.views.generic.base import View
 from django.views.generic.edit import BaseFormView
 from django.core.urlresolvers import reverse
@@ -8,6 +7,7 @@ from django.core.urlresolvers import reverse
 from bills import mondo
 
 from .forms import LoginReceiveForm, OAUTH_STATE_KEY
+from .utils import refresh_accounts
 
 
 class LoginRedirect(View):
@@ -43,4 +43,5 @@ class LoginReceive(BaseFormView):
 
     def form_valid(self, form):
         form.save(self.request)
+        refresh_accounts(self.request.user)
         return redirect('dashboard:view')
