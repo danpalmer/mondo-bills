@@ -14,6 +14,8 @@ class Transaction(models.Model):
         related_name='transactions',
     )
 
+    mondo_transaction_id = models.CharField(max_length=100)
+
     description = models.CharField(max_length=512)
 
     amount = models.IntegerField()
