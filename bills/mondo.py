@@ -92,7 +92,6 @@ def get_all_transactions(user, account_id):
     return all_txs
 
 
-
 def get_transactions(user, account_id, start_date=datetime.datetime(2000, 1, 1)):
     params = {
         'account_id': account_id,
