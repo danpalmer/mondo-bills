@@ -76,19 +76,32 @@ def install_webhook(user, account_id, url):
 
 def get_most_recent_transaction(user, account_id):
     start_date = datetime.datetime.utcnow() - datetime.timedelta(days=1)
-    return get_transactions(user, account_id, start_date)
+    txs = get_transactions(user, account_id, start_date)
+    if not txs:
+        return None
+    return txs[-1]
 
 
-def get_transactions(user, account_id, start_date):
+def get_all_transactions(user, account_id):
+    all_txs = txs = get_transactions(user, account_id)
+    while len(txs) == 100:
+        most_recent_downloaded_tx = txs[-1]['created']
+        print(most_recent_downloaded_tx)
+        txs = get_transactions(user, account_id, most_recent_downloaded_tx)
+        all_txs.extend(txs)
+    return all_txs
+
+
+
+def get_transactions(user, account_id, start_date=datetime.datetime(2000, 1, 1)):
     params = {
         'account_id': account_id,
+        'limit': 100,
         'expand[]': 'merchant',
-    }
-
-    if start_date is not None:
-        params['since'] = strict_rfc3339.timestamp_to_rfc3339_utcoffset(
-            last_day.timestamp(),
+        'since': start_date if isinstance(start_date, str) else strict_rfc3339.timestamp_to_rfc3339_utcoffset(
+            start_date.timestamp(),
         )
+    }
 
     transactions_response = requests.get(
         URL_TRANSACTIONS,
@@ -98,16 +111,10 @@ def get_transactions(user, account_id, start_date):
 
     transactions = transactions_response.json()['transactions']
 
-    if not transactions:
-        return None
-
-    transactions = sorted(
+    return sorted(
         transactions,
         key=operator.itemgetter('created'),
-        reverse=True,
     )
-
-    return transactions[0]
 
 
 def insert_feed_item(user, account_id, feed_item):
