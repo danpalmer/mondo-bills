@@ -1,6 +1,7 @@
 import datetime
 import requests
 import strict_rfc3339
+import operator
 
 from urllib.parse import urlencode
 
@@ -74,18 +75,25 @@ def install_webhook(user, account_id, url):
 
 
 def get_most_recent_transaction(user, account_id):
-    last_day = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+    start_date = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+    return get_transactions(user, account_id, start_date)
+
+
+def get_transactions(user, account_id, start_date):
+    params = {
+        'account_id': account_id,
+        'expand[]': 'merchant',
+    }
+
+    if start_date is not None:
+        params['since'] = strict_rfc3339.timestamp_to_rfc3339_utcoffset(
+            last_day.timestamp(),
+        )
 
     transactions_response = requests.get(
         URL_TRANSACTIONS,
-        params={
-            'account_id': account_id,
-            'expand[]': 'merchant',
-            'since': strict_rfc3339.timestamp_to_rfc3339_utcoffset(
-                last_day.timestamp(),
-            ),
-        },
         headers=auth_header(user),
+        params=params,
     )
 
     transactions = transactions_response.json()['transactions']
@@ -95,7 +103,7 @@ def get_most_recent_transaction(user, account_id):
 
     transactions = sorted(
         transactions,
-        key=lambda x: x['created'],
+        key=operator.itemgetter('created'),
         reverse=True,
     )
 
