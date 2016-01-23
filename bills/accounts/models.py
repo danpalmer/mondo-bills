@@ -19,5 +19,7 @@ class Account(models.Model):
     webhook_id = models.CharField(max_length=50, unique=True)
     mondo_account_id = models.CharField(max_length=50, unique=True)
 
+    current_balance = models.IntegerField()
+
     def __str__(self):
         return self.description

@@ -4,7 +4,7 @@
   <div class="row home-content">
     {% for account in request.user.accounts.all() %}
         <div class="col-xs-12">
-            Account: {{ account }}
+            Account: {{ account.current_balance }}
         </div>
     {% endfor %}
   </div>

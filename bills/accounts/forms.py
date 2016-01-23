@@ -7,8 +7,7 @@ from django.core.urlresolvers import reverse
 
 from bills import mondo
 
-from .models import MondoUser, Account
-from .utils import refresh_accounts
+from .models import MondoUser
 
 
 OAUTH_STATE_KEY = 'OAUTH_STATE_KEY'

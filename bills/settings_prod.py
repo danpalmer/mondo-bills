@@ -30,6 +30,7 @@ INSTALLED_APPS = (
     'bills.accounts',
     'bills.webhooks',
     'bills.dashboard',
+    'bills.transactions',
 )
 
 if not DEBUG:

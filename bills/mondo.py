@@ -1,6 +1,7 @@
 import datetime
 import requests
 import strict_rfc3339
+import operator
 
 from urllib.parse import urlencode
 
@@ -18,6 +19,7 @@ URL_ACCOUNTS = url('accounts')
 URL_TRANSACTIONS = url('transactions')
 URL_TRANSACTION_FMT = url('transaction/%s')
 URL_FEED = url('feed')
+URL_BALANCE = url('balance')
 
 
 def auth_redirect(state, redirect_uri):
@@ -53,6 +55,16 @@ def get_accounts(user):
     return requests.get(URL_ACCOUNTS, headers=auth_header(user)).json()
 
 
+def get_balance(user, account):
+    return requests.get(
+        URL_BALANCE,
+        params={
+            'account_id': account.mondo_account_id,
+        },
+        headers=auth_header(user),
+    ).json()
+
+
 def install_webhook(user, account_id, url):
     webhook_response = requests.post(URL_WEBHOOK_CREATE, data={
         'account_id': account_id,
@@ -63,32 +75,46 @@ def install_webhook(user, account_id, url):
 
 
 def get_most_recent_transaction(user, account_id):
-    last_day = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+    start_date = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+    txs = get_transactions(user, account_id, start_date)
+    if not txs:
+        return None
+    return txs[-1]
+
+
+def get_all_transactions(user, account_id):
+    all_txs = txs = get_transactions(user, account_id)
+    while len(txs) == 100:
+        most_recent_downloaded_tx = txs[-1]['created']
+        print(most_recent_downloaded_tx)
+        txs = get_transactions(user, account_id, most_recent_downloaded_tx)
+        all_txs.extend(txs)
+    return all_txs
+
+
+
+def get_transactions(user, account_id, start_date=datetime.datetime(2000, 1, 1)):
+    params = {
+        'account_id': account_id,
+        'limit': 100,
+        'expand[]': 'merchant',
+        'since': start_date if isinstance(start_date, str) else strict_rfc3339.timestamp_to_rfc3339_utcoffset(
+            start_date.timestamp(),
+        )
+    }
 
     transactions_response = requests.get(
         URL_TRANSACTIONS,
-        params={
-            'account_id': account_id,
-            'expand[]': 'merchant',
-            'since': strict_rfc3339.timestamp_to_rfc3339_utcoffset(
-                last_day.timestamp(),
-            ),
-        },
         headers=auth_header(user),
+        params=params,
     )
 
     transactions = transactions_response.json()['transactions']
 
-    if not transactions:
-        return None
-
-    transactions = sorted(
+    return sorted(
         transactions,
-        key=lambda x: x['created'],
-        reverse=True,
+        key=operator.itemgetter('created'),
     )
-
-    return transactions[0]
 
 
 def insert_feed_item(user, account_id, feed_item):

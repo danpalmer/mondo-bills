@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.views.generic.base import View
@@ -38,7 +39,9 @@ class LoginReceive(BaseFormView):
         return kwargs
 
     def form_invalid(self, form):
-        import ipdb; ipdb.set_trace()
+        errors = [z for x, y in form.errors.items() for z in y]
+        for error in errors:
+            messages.error(self.request, error)
         return redirect('home:view')
 
     def form_valid(self, form):
