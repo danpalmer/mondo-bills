@@ -26,6 +26,7 @@ def receive_transaction_hook_task(account_id, transaction):
     )
 
     account.transactions.create(
+        mondo_transaction_id=data['id'],
         description=data['description'],
         amount=data['amount'],
         is_load=data['is_load'],
