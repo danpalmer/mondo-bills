@@ -29,6 +29,7 @@ INSTALLED_APPS = (
     'bills.home',
     'bills.accounts',
     'bills.webhooks',
+    'bills.dashboard',
 )
 
 if not DEBUG:

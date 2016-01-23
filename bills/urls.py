@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'', include('bills.home.urls', namespace='home')),
     url(r'^account/', include('bills.accounts.urls', namespace='accounts')),
     url(r'^webhook/', include('bills.webhooks.urls', namespace='webhooks')),
+    url(r'^', include('bills.dashboard.urls', namespace='dashboard')),
 ]
 
 if settings.DEBUG:

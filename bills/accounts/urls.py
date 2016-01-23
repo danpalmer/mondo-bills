@@ -16,13 +16,6 @@ urlpatterns = [
         views.LoginReceive.as_view(),
         name='login-receive',
     ),
-
-    # Login Required
-    url(
-        r'^$',
-        login_required(views.Dashboard.as_view()),
-        name='dashboard',
-    ),
     url(
         r'^logout$',
         login_required(auth_views.logout),

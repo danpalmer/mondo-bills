@@ -43,8 +43,4 @@ class LoginReceive(BaseFormView):
 
     def form_valid(self, form):
         form.save(self.request)
-        return redirect('accounts:dashboard')
-
-
-class Dashboard(ListView):
-    template_name = 'accounts/dashboard.html'
+        return redirect('dashboard:view')

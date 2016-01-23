@@ -7,6 +7,6 @@ class Home(TemplateView):
 
     def get(self, request):
         if request.user.is_authenticated():
-            return redirect('accounts:dashboard')
+            return redirect('dashboard:view')
 
         return super().get(request)
