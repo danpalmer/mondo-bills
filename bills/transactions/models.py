@@ -23,6 +23,7 @@ class Transaction(models.Model):
     category = models.CharField(max_length=100)
     merchant_group = models.ForeignKey(
         MerchantGroup,
+        null=True,
         related_name='transactions',
     )
 
