@@ -15,3 +15,4 @@ lxml
 cssselect
 dj-database-url
 dj-static
+python-dateutil==2.4.2
