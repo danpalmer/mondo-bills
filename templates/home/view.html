@@ -1,0 +1,14 @@
+{% extends "base/base.html" %}
+
+{% block body_container %}
+  <div class="row home-content">
+    <div class="col-md-6 col-sm-12">
+      <p class="lead">
+        Monitor your subscriptions and bills, get notified when you are going to run out of money.
+      </p>
+      <a href="{{ url("accounts:login") }}" class="btn btn-primary">
+        Login with Mondo
+      </a>
+    </div>
+  </div>
+{% endblock %}
