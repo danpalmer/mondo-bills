@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 # -*- encoding:utf-8 -*-
 
 """
@@ -7,6 +8,10 @@ Reads in a bunch of transactions, detects recurring payments, defined as:
     RULE 2. Occurs in 2+ consecutive months.
     RULE 3. Exclude transaction category 'eating_out'
     RULE 4. Exclude months containing 3+ transactions.
+
+Predicts date & amount of next recurring expense:
+    DATE: Most common, or most recent
+    COST: Average spend.
 """
 
 from dateutil import relativedelta as rdel, parser
@@ -64,7 +69,20 @@ for merchant in merchants:
         # RULE 2. Occurs in 2+ consecutive months.
         if longest_run(absolute_months) >= CONSECUTIVE_MONTHS:
             merchant_name = merchant_transactions['merchant_name'].unique()[0]
-            matching_merchants += [(merchant, merchant_name)]
+            # Calculate predicted date
+            days_of_month = pd.Series(parser.parse(x).day for x in merchant_transactions['created'])
+            date_counts = days_of_month.value_counts()
+            if len(date_counts[date_counts == max(date_counts)]) == 1:
+                predicted_date = date_counts[date_counts == max(date_counts)].index[0]
+            else:  # go with most recent
+                predicted_date = list(days_of_month)[-1]
+            # Calculate predicted value (avg)
+            predicted_amount = int(merchant_transactions['amount'].mean())
+            # Write out
+            matching_merchants += [{'group_id': merchant,
+                                    'name': merchant_name,
+                                    'predicted_next_day_of_month': predicted_date,
+                                    'predicted_next_amount': predicted_amount}]
 
 # Examine results
 # pprint(matching_merchants)
