@@ -12,5 +12,4 @@ def receive_transaction_hook_task(account_id, transaction):
     if transaction['type'] != 'transaction.created':
         return
 
-    data = transaction['data']
-    transaction_utils.store_transaction(account, data)
+    transaction_utils.store_transaction(account, transaction['data'])
