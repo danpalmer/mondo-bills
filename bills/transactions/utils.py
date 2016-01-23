@@ -3,8 +3,7 @@ from dateutil import parser as dateparser
 from bills.transactions.models import MerchantGroup
 
 
-def store_transaction(account, transaction):
-    data = transaction
+def store_transaction(account, data):
     merchant = None
     if data['merchant']:
         merchant, _ = MerchantGroup.objects.get_or_create(
