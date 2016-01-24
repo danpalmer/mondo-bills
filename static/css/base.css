@@ -57,6 +57,10 @@ footer {
   margin-top: -5px;
 }
 
+table.recurring-transactions {
+  margin-top: 30px;
+}
+
 .recurring-transaction img {
   width: 32px;
   height: 32px;
