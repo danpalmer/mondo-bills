@@ -7,7 +7,7 @@ class RecurringTransaction(models.Model):
         related_name='recurring_transactions',
     )
 
-    merchant = models.ForeignKey(
+    merchant_group = models.ForeignKey(
         'transactions.MerchantGroup',
         related_name='recurring_transactions',
     )
