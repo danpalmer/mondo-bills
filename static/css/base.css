@@ -52,3 +52,24 @@ footer {
   margin-right: 6px;
   margin-top: -5px;
 }
+
+.recurring-transaction img {
+  width: 32px;
+  height: 32px;
+}
+
+.recurring-transaction.paid-this-month {
+  opacity: 0.5;
+}
+
+.recurring-transaction .logo {
+  width: 32px;
+}
+
+.recurring-transaction .credit-card-icon {
+  font-size: 20px;
+  width: 100%;
+  display: block;
+  height: 32px;
+  text-align: center;
+}

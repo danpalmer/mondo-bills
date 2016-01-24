@@ -11,6 +11,8 @@ class Dashboard(ListView):
     def get_queryset(self):
         return RecurringTransaction.objects.filter(
             account__user=self.request.user,
+        ).order_by(
+            'predicted_day_of_month',
         )
 
     def get(self, *args, **kwargs):
