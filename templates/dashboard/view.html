@@ -2,22 +2,10 @@
 
 {% block body_container %}
   <div class="row home-content">
-    {% for account in accounts %}
+    {% for recurring in recurring_transactions %}
         <div class="col-xs-12">
-            Account: {{ account.actual_account.current_balance }}
-            <ul>
-              {% for merchant in account.recurring_transactions %}
-                <li>
-                  <dl>
-                    <dt>Name:</dt><dd>{{ merchant.name }}</dd>
-                    <dt>Predicted next day of month:</dt><dd>{{ merchant.predicted_next_day_of_month }}</dd>
-                    <dt>Predicted next amount:</dt><dd>{{ merchant.predicted_next_amount }}</dd>
-                  </dl>
-                </li>
-              {% endfor %}
-            </ul>
+            {{ recurring }}
         </div>
     {% endfor %}
   </div>
 {% endblock %}
-
