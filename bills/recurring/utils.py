@@ -76,8 +76,10 @@ def time_of_zero_balance(account):
         if current_balance <= 0:
             break
 
-    return now + relativedelta.relativedelta(months=month, day=payment.predicted_day_of_month)
-
+    return now + relativedelta.relativedelta(
+        months=month,
+        day=payment.predicted_day_of_month,
+    )
 
 
 def generate_payments(r_txs):
