@@ -8,13 +8,13 @@ class Dashboard(TemplateView):
 
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(self, *args, **kwargs)
+        ctx = super().get_context_data(*args, **kwargs)
         to_return = {}
         to_return.update(ctx)
         user = self.request.user
 
         accounts = []
-        for account in self.user.accounts.all():
+        for account in user.accounts.all():
             accounts.append({
                 'actual_account': account,
                 'recurring_transactions': utils.get_recurring_merchants(account),

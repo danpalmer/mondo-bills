@@ -36,16 +36,18 @@ def get_recurring_merchants(account):
     for tx in txs:
         merchant = tx.merchant_group
         dictified_txs.append({
-            'amount': tx.ammount,
+            'amount': tx.amount,
             'category': tx.category,
-            'created': strict_rfc339.timestamp_to_rfc3339_utcoffset(
-                tx.created.timestamp(),
+            'created': strict_rfc3339.timestamp_to_rfc3339_utcoffset(
+                tx.mondo_created.timestamp(),
             ),
             'merchant': {
-                'id': merchant.mondo_group_id,
-                'group_id': merchant.mondo_group_id,
-                'name': merchant.name,
+                'id': getattr(merchant, 'mondo_group_id', 'NA'),
+                'group_id': getattr(merchant, 'mondo_group_id', 'NA'),
+                'name': getattr(merchant, 'name', 'NA'),
             },
         })
 
-    return detect_recurring_payments.process_transactions(dictified_txs)
+    return detect_recurring_payments.process_transactions({
+        'transactions': dictified_txs
+    })

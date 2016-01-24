@@ -33,10 +33,12 @@ def process_transactions(txs):
 
     def longest_run(data):
         """Return length of longest run of consectuive integers in a list"""
-        def do_a_thing(i, x):
+        def do_a_thing(wtf):
+            i, x = wtf
             return i - x
+        grouped = groupby(enumerate(data), do_a_thing)
         return max(
-            len(map(itemgetter(1), g)) for k, g in groupby(enumerate(data), do_a_thing)
+            len(list(map(itemgetter(1), g))) for k, g in grouped
         )
 
 
