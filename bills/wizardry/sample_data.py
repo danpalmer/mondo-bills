@@ -55,7 +55,7 @@ COLUMNS =  [
     'Record_Data_DE120',
     'SubBIN',
     'TLogIDOrg',
-    'VL_Group'
+    'VL_Group',
 ]
 
 START_DATE = datetime.datetime(2015, 1, 1)
@@ -71,7 +71,7 @@ NON_SUB_MERCHANTS = [
     "AMAZON.CO.UK",
     "BYRON HAMBURGERS COWCROSS ST 5",
     "ROYAL BANK 9APR",
-    "FIRST CAPITAL CONN, CITY THAMESLI",
+    "FIRST CAPITAL CONN CITY THAMESLI",
     "OCADO RETAIL LIMIT 01707 228000",
 ]
 
@@ -81,6 +81,16 @@ writer.writerow(COLUMNS)
 
 
 def write_row(balance, month, day, merchant, amount):
+    amount = 0 - (float(amount) / 100.0)
+    balance = float(balance) / 100.0
+
+    d = datetime.datetime(
+        2015, 11, 14,
+        random.randint(0, 23),
+        random.randint(0, 59),
+        random.randint(0, 59),
+    ).strftime('%Y-%m-%d %H:%M:%S.%f')
+
     writer.writerow([
         '%.2f' % amount,
         '826',
@@ -94,12 +104,7 @@ def write_row(balance, month, day, merchant, amount):
         '000000',
         '%.2f' % balance,
         '%.2f' % balance,
-        datetime.datetime(
-            2015, 11, 14,
-            random.randint(0, 23),
-            random.randint(0, 59),
-            random.randint(0, 59),
-        ).strftime('%Y-%m-%d %H:%M:%S.%f'),
+        d,
         '90',
         '%.2f' % amount,
         '826',
@@ -122,8 +127,8 @@ def write_row(balance, month, day, merchant, amount):
         '',
         '',
         '',
-        '',
-        '',
+        '%.2f' % amount, # Txn_Amt
+        '826', # Txn_Ccy
         '',
         '',
         '',
@@ -151,7 +156,7 @@ def random_date():
 def generate_random():
     # Generate a NON-subscription charge
     merchant = random.choice(NON_SUB_MERCHANTS)
-    amount = random.randint(-8000, -100)
+    amount = random.randint(100, 8000)
     date = random_date()
     return (date.month, date.day, merchant, amount)
 
@@ -160,12 +165,12 @@ def generate_subscription(merchant, weekly, variable_days, amount, variable_amou
     day_of_week = random.randint(1, 6)
     day_of_month = random.randint(0, 28)
 
-    def generate_iteration(month, day, amount):
+    def generate_iteration(month, day, _amount):
         if variable_amount:
-            amount = amount * random.uniform(amount * 0.9, amount * 2.0)
+            _amount = _amount + random.uniform(_amount * 0.9, _amount * 2.0)
         if variable_days:
             day = random.randint(day - 2, day + 2)
-        return (month, day, merchant, amount)
+        return (month, day, merchant, _amount)
 
     transactions = []
 
@@ -202,8 +207,11 @@ def main():
 
     balance = sum(x for _, _, _, x in transactions)
 
+    write_row(balance, START_DATE.month, START_DATE.day, "SALARY", -balance)
+
     for transaction in sorted(transactions):
         write_row(balance, *transaction)
+        balance = balance - transaction[3]
 
 
 if __name__ == '__main__':
