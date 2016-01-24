@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils.timesince import timeuntil
 from django.contrib.staticfiles.storage import staticfiles_storage
 
@@ -24,9 +25,11 @@ def receive_transaction_hook_task(account_id, transaction):
             account.mondo_account_id,
             {
                 'title': "Top up your account in the next %s to avoid running out of money" % (
-                    timeuntil(account.time_of_zero_balance)
+                    timeuntil(
+                        account.time_of_zero_balance,
+                    ).replace(u'\xa0', u' ')
                 ),
-                'image_url': staticfiles_storage.url(
+                'image_url': settings.SITE_URL + staticfiles_storage.url(
                     'images/money-with-wings.png',
                 ),
             },
