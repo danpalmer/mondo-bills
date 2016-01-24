@@ -18,6 +18,8 @@ class RecurringTransaction(models.Model):
     predicted_day_of_month = models.IntegerField()
     predicted_amount = models.IntegerField()
 
+    is_subscription = models.BooleanField(default=True)
+
     def formatted_amount(self):
         amount_pounds = -float(self.predicted_amount) / 100.0
         return '£%.2f' % amount_pounds
