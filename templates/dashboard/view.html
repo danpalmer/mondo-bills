@@ -5,23 +5,24 @@
 <div class="row app-content">
     {% for account, transactions in account_transactions %}
         {% set transactions=transactions|list() %}
-        <div class="col-xs-4">
+        <div class="col-xs-6">
             <h1>
                 {{ account.formatted_balance() }}
                 <small>Current balance</small>
             </h1>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-6">
             <h1>
                 {{ account.formatted_outgoings() }}
                 <small>Monthly outgoings</small>
             </h1>
         </div>
-        <div class="col-xs-4">
-            <h1>
-                {{ account.get_time_of_zero_balance() }}
-                <small>Time of zero balance</small>
-            </h1>
+        <div class="col-xs-12">
+            {% if account.nearing_zero_balance() %}
+                <div class="alert alert-danger zero-balance-notification">
+                    You're going to run out of money in <strong>{{ account.time_of_zero_balance|timeuntil }}</strong>
+                </div>
+            {% endif %}
         </div>
         <div class="col-xs-12">
             <table class="table table-hover recurring-transactions">

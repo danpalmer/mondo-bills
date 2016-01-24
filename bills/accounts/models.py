@@ -1,4 +1,9 @@
+import datetime
+
+
 from django.db import models
+from django.utils import timezone
+from django.utils.functional import cached_property
 from django.contrib.auth.models import User
 
 from bills.core.fields import OneToOneField
@@ -23,9 +28,6 @@ class Account(models.Model):
 
     current_balance = models.IntegerField(default=0)
 
-    def get_time_of_zero_balance(self):
-        return utils.time_of_zero_balance(self)
-
     def __str__(self):
         return self.description
 
@@ -41,3 +43,11 @@ class Account(models.Model):
         amount_pounds = -float(total) / 100.0
 
         return '£%.2f' % amount_pounds
+
+    @cached_property
+    def time_of_zero_balance(self):
+        return utils.time_of_zero_balance(self)
+
+    def nearing_zero_balance(self):
+        one_week = timezone.now() + datetime.timedelta(days=7)
+        return self.time_of_zero_balance < one_week
