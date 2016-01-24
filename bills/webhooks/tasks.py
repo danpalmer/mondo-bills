@@ -19,6 +19,9 @@ def receive_transaction_hook_task(account_id, transaction):
 
     transaction_utils.store_transaction(account, transaction['data'])
 
+    account.current_balance += transaction['data']['amount']
+    account.save()
+
     if account.nearing_zero_balance():
         mondo.insert_feed_item(
             account.user,
