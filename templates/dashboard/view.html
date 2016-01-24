@@ -5,16 +5,22 @@
 <div class="row app-content">
     {% for account, transactions in account_transactions %}
         {% set transactions=transactions|list() %}
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             <h1>
                 {{ account.formatted_balance() }}
                 <small>Current balance</small>
             </h1>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             <h1>
                 {{ account.formatted_outgoings() }}
                 <small>Monthly outgoings</small>
+            </h1>
+        </div>
+        <div class="col-xs-4">
+            <h1>
+                {{ account.get_time_of_zero_balance() }}
+                <small>Time of zero balance</small>
             </h1>
         </div>
         <div class="col-xs-12">

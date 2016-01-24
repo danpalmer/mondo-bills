@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 from bills.core.fields import OneToOneField
 
+from bills.recurring import utils
+
 
 class MondoUser(models.Model):
     user = OneToOneField(User, related_name='mondo_user')
@@ -20,6 +22,9 @@ class Account(models.Model):
     mondo_account_id = models.CharField(max_length=50, unique=True)
 
     current_balance = models.IntegerField(default=0)
+
+    def get_time_of_zero_balance(self):
+        return utils.time_of_zero_balance(self)
 
     def __str__(self):
         return self.description

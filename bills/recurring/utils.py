@@ -1,6 +1,8 @@
+import itertools
 import datetime
 import strict_rfc3339
 
+from dateutil import relativedelta
 from django.utils import timezone
 
 from bills.wizardry import detect_recurring_payments
@@ -57,3 +59,34 @@ def get_recurring_merchants(transactions):
     return detect_recurring_payments.process_transactions({
         'transactions': dictified_txs
     })
+
+
+def time_of_zero_balance(account):
+    now = timezone.now()
+    current_balance = account.current_balance
+
+    r_txs = RecurringTransaction.objects.filter(
+        account=account,
+    ).order_by(
+        'predicted_day_of_month',
+    )
+
+    for month, payment in generate_payments(r_txs):
+        current_balance += payment.predicted_amount
+        if current_balance <= 0:
+            break
+
+    return now + relativedelta.relativedelta(months=month, day=payment.predicted_day_of_month)
+
+
+
+def generate_payments(r_txs):
+    count = itertools.count()
+    month = next(count)
+    for transaction in r_txs:
+        if not transaction.paid_this_month():
+            yield month, transaction
+
+    for month in count:
+        for transaction in r_txs:
+            yield month, transaction
