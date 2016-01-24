@@ -14,6 +14,7 @@ class Dashboard(TemplateView):
         context = super().get_context_data(**kwargs)
 
         transactions = RecurringTransaction.objects.filter(
+            is_subscription=True,
             account__user=self.request.user,
         ).order_by(
             'predicted_day_of_month',

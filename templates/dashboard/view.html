@@ -31,6 +31,7 @@
                         <th>Merchant</th>
                         <th>Amount</th>
                         <th>Due</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,9 +44,17 @@
                                     <span class="glyphicon glyphicon-credit-card credit-card-icon"></span>
                                 {% endif %}
                             </td>
-                            <td>{{ recurring.merchant_group.name }}</td>
-                            <td>{{ recurring.formatted_amount() }}</td>
-                            <td>{{ recurring.formatted_day_of_month() }}</td>
+                            <td class="name">{{ recurring.merchant_group.name }}</td>
+                            <td class="amount">{{ recurring.formatted_amount() }}</td>
+                            <td class="day">{{ recurring.formatted_day_of_month() }}</td>
+                            <td>
+                                <form method="POST" action="{{ url("recurring:ignore", recurring.pk) }}">
+                                    {{ csrf_input }}
+                                    <button type="submit" class="btn btn-link ignore-button">
+                                        <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

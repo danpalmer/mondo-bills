@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^account/', include('bills.accounts.urls', namespace='accounts')),
     url(r'^webhook/', include('bills.webhooks.urls', namespace='webhooks')),
     url(r'^', include('bills.dashboard.urls', namespace='dashboard')),
+    url(r'^recurring/', include('bills.recurring.urls', namespace='recurring')),
 ]
 
 if settings.DEBUG:
