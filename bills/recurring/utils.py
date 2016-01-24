@@ -10,10 +10,13 @@ def refresh_recurring_transactions(account):
         mondo_created__gte=timezone.now(),
     )
 
-def get_recurring_merchants(account):
-    txs = account.transactions.all().select_related('merchant_group')
+    recurring_merchants = get_recurring_merchants(last_3_months)
+
+def get_recurring_merchants(transactions):
+    transactions = transactions.filter(merchant_group__isnull=False)
+
     dictified_txs = []
-    for tx in txs:
+    for tx in transactions:
         merchant = tx.merchant_group
         dictified_txs.append({
             'amount': tx.amount,
@@ -22,9 +25,9 @@ def get_recurring_merchants(account):
                 tx.mondo_created.timestamp(),
             ),
             'merchant': {
-                'id': getattr(merchant, 'mondo_group_id', 'NA'),
-                'group_id': getattr(merchant, 'mondo_group_id', 'NA'),
-                'name': getattr(merchant, 'name', 'NA'),
+                'id': merchant.mondo_group_id,
+                'group_id': merchant.mondo_group_id,
+                'name': merchant.name,
             },
         })
 
