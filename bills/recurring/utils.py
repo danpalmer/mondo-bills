@@ -1,19 +1,42 @@
+import datetime
 import strict_rfc3339
 
 from django.utils import timezone
 
 from bills.wizardry import detect_recurring_payments
+from bills.transactions.models import MerchantGroup
+
+from .models import RecurringTransaction
 
 
 def refresh_recurring_transactions(account):
     last_3_months = account.transactions.filter(
-        mondo_created__gte=timezone.now(),
+        mondo_created__gte=timezone.now() - datetime.timedelta(days=100),
     )
 
     recurring_merchants = get_recurring_merchants(last_3_months)
 
+    for recurring_merchant in recurring_merchants:
+        merchant_group = MerchantGroup.objects.filter(
+            mondo_group_id=recurring_merchant['group_id'],
+        ).first()
+
+        day_of_month = recurring_merchant['predicted_next_day_of_month']
+        amount = recurring_merchant['predicted_next_amount']
+
+        RecurringTransaction.objects.get_or_create(
+            account=account,
+            merchant_group=merchant_group,
+            defaults={
+                'predicted_day_of_month': day_of_month,
+                'predicted_amount': amount,
+            }
+        )
+
 def get_recurring_merchants(transactions):
     transactions = transactions.filter(merchant_group__isnull=False)
+    if not transactions:
+        return []
 
     dictified_txs = []
     for tx in transactions:
