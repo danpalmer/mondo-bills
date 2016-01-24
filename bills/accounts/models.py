@@ -23,3 +23,16 @@ class Account(models.Model):
 
     def __str__(self):
         return self.description
+
+    def formatted_balance(self):
+        amount_pounds = float(self.current_balance) / 100.0
+        return '£%.2f' % amount_pounds
+
+    def formatted_outgoings(self):
+        total = self.recurring_transactions.aggregate(
+            sum=models.Sum('predicted_amount'),
+        )['sum']
+
+        amount_pounds = -float(total) / 100.0
+
+        return '£%.2f' % amount_pounds

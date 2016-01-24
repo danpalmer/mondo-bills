@@ -1,34 +1,51 @@
 {% extends "base/base.html" %}
 
 {% block body_container %}
-  <div class="row home-content">
-    <div class="col-xs-12">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Merchant</th>
-                    <th>Amount</th>
-                    <th>Due</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for recurring in recurring_transactions %}
-                    <tr class="recurring-transaction {% if recurring.paid_this_month() %}paid-this-month{% endif %}">
-                        <td class="logo">
-                            {% if recurring.merchant_group.logo_url %}
-                                <img src="{{ recurring.merchant_group.logo_url }}" alt="{{ recurring.merchant_group.name }}">
-                            {% else %}
-                                <span class="glyphicon glyphicon-credit-card credit-card-icon"></span>
-                            {% endif %}
-                        </td>
-                        <td>{{ recurring.merchant_group.name }}</td>
-                        <td>{{ recurring.formatted_amount() }}</td>
-                        <td>{{ recurring.formatted_day_of_month() }}</td>
+
+<div class="row app-content">
+    {% for account, transactions in account_transactions %}
+        {% set transactions=transactions|list() %}
+        <div class="col-xs-6">
+            <h1>
+                {{ account.formatted_balance() }}
+                <small>Current balance</small>
+            </h1>
+        </div>
+        <div class="col-xs-6">
+            <h1>
+                {{ account.formatted_outgoings() }}
+                <small>Monthly outgoings</small>
+            </h1>
+        </div>
+        <div class="col-xs-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Merchant</th>
+                        <th>Amount</th>
+                        <th>Due</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-  </div>
+                </thead>
+                <tbody>
+                    {% for recurring in transactions %}
+                        <tr class="recurring-transaction {% if recurring.paid_this_month() %}paid-this-month{% endif %}">
+                            <td class="logo">
+                                {% if recurring.merchant_group.logo_url %}
+                                    <img src="{{ recurring.merchant_group.logo_url }}" alt="{{ recurring.merchant_group.name }}">
+                                {% else %}
+                                    <span class="glyphicon glyphicon-credit-card credit-card-icon"></span>
+                                {% endif %}
+                            </td>
+                            <td>{{ recurring.merchant_group.name }}</td>
+                            <td>{{ recurring.formatted_amount() }}</td>
+                            <td>{{ recurring.formatted_day_of_month() }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+</div>
+
 {% endblock %}

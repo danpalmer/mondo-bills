@@ -46,6 +46,10 @@ footer {
   margin-top: 30px;
 }
 
+.app-content {
+  margin-top: 30px;
+}
+
 .navbar-brand img {
   max-width: 32px;
   display: inline-block;
