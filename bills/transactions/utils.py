@@ -1,6 +1,8 @@
 from dateutil import parser as dateparser
+import strict_rfc3339
 
 from bills.transactions.models import MerchantGroup
+from bills.wizardry import detect_recurring_payments
 
 
 def store_transaction(account, data):
@@ -26,3 +28,24 @@ def store_transaction(account, data):
             'merchant_group': merchant,
         },
     )
+
+
+def get_recurring_merchants(account):
+    txs = account.transactions.all().select_related('merchant_group')
+    dictified_txs = []
+    for tx in txs:
+        merchant = tx.merchant_group
+        dictified_txs.append({
+            'amount': tx.ammount,
+            'category': tx.category,
+            'created': strict_rfc339.timestamp_to_rfc3339_utcoffset(
+                tx.created.timestamp(),
+            ),
+            'merchant': {
+                'id': merchant.mondo_group_id,
+                'group_id': merchant.mondo_group_id,
+                'name': merchant.name,
+            },
+        })
+
+    return detect_recurring_payments.process_transactions(dictified_txs)
