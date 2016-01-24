@@ -86,7 +86,6 @@ def get_all_transactions(user, account_id):
     all_txs = txs = get_transactions(user, account_id)
     while len(txs) == 100:
         most_recent_downloaded_tx = txs[-1]['created']
-        print(most_recent_downloaded_tx)
         txs = get_transactions(user, account_id, most_recent_downloaded_tx)
         all_txs.extend(txs)
     return all_txs
