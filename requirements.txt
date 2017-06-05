@@ -16,5 +16,5 @@ cssselect
 dj-database-url
 dj-static
 numpy==1.10.4
-pandas==0.20.0
+pandas==0.20.2
 python-dateutil==2.4.2
